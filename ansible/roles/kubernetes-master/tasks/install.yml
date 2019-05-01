@@ -1,6 +1,6 @@
 ---
 - name: run kubeadm init on primary master
-  shell: "/usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.conf --ignore-preflight-errors=all"
+  shell: "/usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.conf --ignore-preflight-errors={{ kubernetes_master_kubeadm_ignore_preflight_errors }}"
   delegate_to: "{{ groups['primary_master']|first }}"
   run_once: true
   when: kubeadm_apiserver_manifest.stat.exists == False
@@ -44,5 +44,5 @@
   when: inventory_hostname != groups['primary_master']|first
 
 - name: initialize secondary masters
-  command: "/usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.conf --ignore-preflight-errors=all"
+  command: "/usr/bin/kubeadm init --config=/etc/kubernetes/kubeadm.conf --ignore-preflight-errors={{ kubernetes_master_kubeadm_ignore_preflight_errors }}"
   when: kubeadm_apiserver_manifest.stat.exists == False and inventory_hostname != groups['primary_master']|first
